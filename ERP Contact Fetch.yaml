@@ -1,0 +1,47 @@
+openapi: 3.0.3
+
+info:
+  title: Zoho ERP Contacts
+  version: "1.0.0"
+  description: Read contacts from Zoho ERP.
+
+servers:
+  - url: https://www.zohoapis.in/erp/v3
+
+paths:
+  /contacts:
+    get:
+      operationId: listContacts
+      summary: List Contacts
+      description: Returns contacts from Zoho ERP.
+
+      security:
+        - OAuthToken:
+            - ERP.contacts.READ
+
+      parameters:
+        - name: organization_id
+          in: query
+          required: true
+          schema:
+            type: string
+            default: "60076965886"
+
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+
+components:
+  securitySchemes:
+    OAuthToken:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://accounts.zoho.in/oauth/v2/auth
+          tokenUrl: https://accounts.zoho.in/oauth/v2/token
+          scopes:
+            ERP.contacts.READ: Read ERP contacts
