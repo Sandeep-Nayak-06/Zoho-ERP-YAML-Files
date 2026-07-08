@@ -1,0 +1,199 @@
+openapi: 3.0.3
+
+info:
+  title: Zoho ERP Contacts API
+  version: "1.0.0"
+  description: Create a new contact in Zoho ERP.
+
+servers:
+  - url: https://www.zohoapis.in/erp/v3
+
+paths:
+  /contacts:
+    post:
+      operationId: createContact
+      summary: Create Contact
+      description: Creates a new customer or vendor contact in Zoho ERP.
+
+      tags:
+        - Contacts
+
+      x-zoho-oauth:
+        connection: erpcontactsscope
+        scopes:
+          - ERP.contacts.CREATE
+
+      security:
+        - OAuth2:
+            - ERP.contacts.CREATE
+
+      parameters:
+        - name: organization_id
+          in: query
+          required: true
+          description: Zoho ERP Organization ID.
+          schema:
+            type: string
+            default: "60076965886"
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - contact_name
+              properties:
+                contact_name:
+                  type: string
+                  description: Name of the contact.
+
+                contact_type:
+                  type: string
+                  description: Type of contact.
+                  enum:
+                    - customer
+                    - vendor
+
+                customer_sub_type:
+                  type: string
+                  description: Customer subtype.
+                  enum:
+                    - business
+                    - individual
+
+                company_name:
+                  type: string
+
+                first_name:
+                  type: string
+
+                last_name:
+                  type: string
+
+                email:
+                  type: string
+                  format: email
+
+                phone:
+                  type: string
+
+                mobile:
+                  type: string
+
+                website:
+                  type: string
+                  format: uri
+
+                payment_terms:
+                  type: integer
+
+                currency_code:
+                  type: string
+
+                billing_address:
+                  type: object
+                  properties:
+                    attention:
+                      type: string
+                    address:
+                      type: string
+                    street2:
+                      type: string
+                    city:
+                      type: string
+                    state:
+                      type: string
+                    zip:
+                      type: string
+                    country:
+                      type: string
+                    phone:
+                      type: string
+
+                shipping_address:
+                  type: object
+                  properties:
+                    attention:
+                      type: string
+                    address:
+                      type: string
+                    street2:
+                      type: string
+                    city:
+                      type: string
+                    state:
+                      type: string
+                    zip:
+                      type: string
+                    country:
+                      type: string
+                    phone:
+                      type: string
+
+      responses:
+        "201":
+          description: Contact created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 0
+
+                  message:
+                    type: string
+                    example: The contact has been added.
+
+                  contact:
+                    type: object
+                    properties:
+                      contact_id:
+                        type: string
+                      contact_name:
+                        type: string
+                      company_name:
+                        type: string
+                      contact_type:
+                        type: string
+                      customer_sub_type:
+                        type: string
+                      email:
+                        type: string
+                      phone:
+                        type: string
+                      mobile:
+                        type: string
+                      currency_code:
+                        type: string
+                      status:
+                        type: string
+                      created_time:
+                        type: string
+                        format: date-time
+
+        "400":
+          description: Invalid request.
+
+        "401":
+          description: Unauthorized.
+
+        "500":
+          description: Internal server error.
+
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://accounts.zoho.in/oauth/v2/auth
+          tokenUrl: https://accounts.zoho.in/oauth/v2/token
+          scopes:
+            ERP.contacts.READ: Read Contacts
+            ERP.contacts.CREATE: Create Contacts
+            ERP.contacts.UPDATE: Update Contacts
+            ERP.contacts.DELETE: Delete Contacts
